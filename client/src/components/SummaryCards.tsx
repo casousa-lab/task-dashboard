@@ -11,29 +11,29 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       title: 'Total de Tarefas',
       value: summary?.total ?? 0,
       icon: ListTodo,
-      color: 'text-indigo-400',
-      bg: 'bg-indigo-500/10',
+      color: 'text-stone-700',
+      bg: 'bg-stone-200/50',
     },
     {
       title: 'A Fazer',
       value: summary?.byStatus.todo ?? 0,
       icon: AlertCircle,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/10',
+      color: 'text-amber-600',
+      bg: 'bg-amber-100/60',
     },
     {
       title: 'Em Progresso',
       value: summary?.byStatus.inProgress ?? 0,
       icon: Clock,
-      color: 'text-blue-400',
-      bg: 'bg-blue-500/10',
+      color: 'text-blue-600',
+      bg: 'bg-blue-100/60',
     },
     {
       title: 'Concluídas',
       value: summary?.byStatus.done ?? 0,
       icon: CheckCircle2,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-100/60',
     },
   ];
 
@@ -44,14 +44,14 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         return (
           <div
             key={card.title}
-            className="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 flex items-center justify-between shadow-lg backdrop-blur-sm"
+            className="bg-white/80 border border-stone-200/80 rounded-2xl p-5 flex items-center justify-between shadow-xs transition-all hover:shadow-md"
           >
             <div>
-              <p className="text-sm font-medium text-slate-400">{card.title}</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">{card.value}</p>
+              <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider">{card.title}</p>
+              <p className="text-2xl font-bold text-stone-800 mt-1">{card.value}</p>
             </div>
-            <div className={`p-3 rounded-xl ${card.bg}`}>
-              <Icon className={`w-6 h-6 ${card.color}`} />
+            <div className={`p-3 rounded-2xl ${card.bg}`}>
+              <Icon className={`w-5 h-5 ${card.color}`} />
             </div>
           </div>
         );
