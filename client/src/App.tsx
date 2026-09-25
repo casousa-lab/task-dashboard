@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import type { Task, TaskSummary, TaskCategory, TaskStatus, CreateTaskInput } from './types/task';
 import { fetchTasks, fetchTaskSummary, createTask, updateTaskStatus, deleteTask } from './services/api';
 import { TimelineView } from './components/TimelineView';
@@ -12,7 +12,8 @@ export function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const refreshData = useCallback(async () => {
+  // Função para recarregar dados manualmente após interações do utilizador (criar/atualizar/apagar)
+  const refreshData = async () => {
     try {
       const categoryFilter = selectedCategory === 'ALL' ? undefined : selectedCategory;
       const statusFilter = selectedStatus === 'ALL' ? undefined : selectedStatus;
@@ -25,15 +26,42 @@ export function App() {
       setTasks(tasksData);
       setSummary(summaryData);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
-    } finally {
-      setLoading(false);
+      console.error('Erro ao recarregar dados:', error);
     }
-  }, [selectedCategory, selectedStatus]);
+  };
 
   useEffect(() => {
-    refreshData();
-  }, [refreshData]);
+    let isMounted = true;
+
+    async function loadDataOnMount() {
+      try {
+        const categoryFilter = selectedCategory === 'ALL' ? undefined : selectedCategory;
+        const statusFilter = selectedStatus === 'ALL' ? undefined : selectedStatus;
+
+        const [tasksData, summaryData] = await Promise.all([
+          fetchTasks(categoryFilter, statusFilter),
+          fetchTaskSummary(),
+        ]);
+
+        if (isMounted) {
+          setTasks(tasksData);
+          setSummary(summaryData);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadDataOnMount();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCategory, selectedStatus]);
 
   const handleCreateTask = async (data: CreateTaskInput) => {
     await createTask(data);
